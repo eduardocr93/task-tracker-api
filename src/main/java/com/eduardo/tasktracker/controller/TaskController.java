@@ -75,6 +75,18 @@ public class TaskController {
         repo.delete(t);
     }
 
+    @PatchMapping("/{id}/status")
+    public TaskResponse updateStatus(
+            @PathVariable Long id,
+            @RequestParam TaskStatus value
+    ) {
+        Task t = repo.findById(id)
+                .orElseThrow(() -> new NotFoundException("Task not found: " + id));
+
+        t.setStatus(value);
+        return toResponse(repo.save(t));
+    }
+
     private TaskResponse toResponse(Task t) {
         return new TaskResponse(
                 t.getId(),
