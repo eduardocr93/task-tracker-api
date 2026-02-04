@@ -4,6 +4,7 @@ import com.eduardo.tasktracker.dto.TaskRequest;
 import com.eduardo.tasktracker.dto.TaskResponse;
 import com.eduardo.tasktracker.entity.Task;
 import com.eduardo.tasktracker.entity.TaskStatus;
+import com.eduardo.tasktracker.exception.NotFoundException;
 import com.eduardo.tasktracker.repository.TaskRepository;
 import jakarta.validation.Valid;
 import org.springframework.data.domain.Page;
@@ -35,7 +36,7 @@ public class TaskController {
     @GetMapping("/{id}")
     public TaskResponse getById(@PathVariable Long id) {
         Task t = repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Task not found: " + id));
         return toResponse(t);
     }
 
@@ -57,7 +58,7 @@ public class TaskController {
     @PutMapping("/{id}")
     public TaskResponse update(@PathVariable Long id, @Valid @RequestBody TaskRequest req) {
         Task t = repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Task not found: " + id));
 
         t.setTitle(req.getTitle().trim());
         t.setDescription(req.getDescription());
@@ -70,7 +71,7 @@ public class TaskController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete(@PathVariable Long id) {
         Task t = repo.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found: " + id));
+                .orElseThrow(() -> new NotFoundException("Task not found: " + id));
         repo.delete(t);
     }
 
